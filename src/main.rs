@@ -1,3 +1,9 @@
+use crate::perceptron::train_perceptron;
+mod perceptron;
+
 fn main() {
-    println!("Hello, world!");
+    train_perceptron();
+    
 }
+
+
