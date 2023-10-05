@@ -1,7 +1,17 @@
 use std::io;
-use nalgebra::SVector;
+use nalgebra::{SVector, SMatrix};
 use crate::perceptron::Perceptron;
 mod perceptron;
+
+
+const INPUTS: SMatrix<f64, 2, 4> = SMatrix::<f64, 2, 4>::new(
+    1.0, 2.0, 0.0, 1.0,
+    -1.0, 0.0, 2.0, 1.0,
+);
+const OUTPUTS: SVector<f64, 4> = SVector::<f64, 4>::new(0.0, 1.0, 1.0, 1.0);
+const STEPS: f64 = 0.1;
+const NUM_STEPS: i32 = 10;
+
 
 fn main() {
     let mut perceptron = Perceptron{
@@ -9,7 +19,12 @@ fn main() {
         bias: 3.,
     };
     
-    perceptron.train_perceptron();
+    perceptron.gradient_descent(
+        NUM_STEPS,
+        INPUTS,
+        OUTPUTS,
+        STEPS,
+    );
 
     // TODO: Train perceptron on input data, and
     // ask for an n-dimensional vector

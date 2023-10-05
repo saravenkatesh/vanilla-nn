@@ -44,7 +44,7 @@ impl<const X: usize, const N: usize> Perceptron<X, N> {
 }
 
 impl<const X: usize, const N: usize> Perceptron<X, N> {
-    fn gradient_descent(
+    pub fn gradient_descent(
         &mut self, 
         num_steps: i32,
         inputs: SMatrix<f64, X, N>, 
@@ -58,27 +58,5 @@ impl<const X: usize, const N: usize> Perceptron<X, N> {
                 step, 
             );
         }
-    }
-}
-
-// TODO: have this function accept a matrix of inputs
-// and outputs of arbitrary dimension
-impl Perceptron<2, 4> {
-    pub fn train_perceptron(&mut self) {
-        // Train perceptron
-        let inputs = SMatrix::<f64, 2, 4>::new(
-            1.0, 2.0, 0.0, 1.0,
-            -1.0, 0.0, 2.0, 1.0,
-        );
-        let outputs = SVector::<f64, 4>::new(0.0, 1.0, 1.0, 1.0);
-        let step = 0.1;
-        let num_steps = 10;
-
-        self.gradient_descent(
-            num_steps,
-            inputs,
-            outputs,
-            step,
-        );
     }
 }
