@@ -7,9 +7,15 @@ fn threshold(x: f64) -> f64 {
     return 0.0;
 }
 
-struct Perceptron<const X: usize, const N: usize> {
-    weights: SVector<f64, X>,
-    bias: f64,
+pub struct Perceptron<const X: usize, const N: usize> {
+    pub weights: SVector<f64, X>,
+    pub bias: f64,
+}
+
+impl<const X: usize, const N: usize> Perceptron<X, N> {
+    pub fn classifier(&self, input: SVector<f64, X>) -> f64 {
+        threshold(self.weights.dot(&input) + self.bias)
+    }
 }
 
 impl<const X: usize, const N: usize> Perceptron<X, N> {
@@ -50,30 +56,29 @@ impl<const X: usize, const N: usize> Perceptron<X, N> {
                 inputs, 
                 outputs,
                 step, 
-            )
+            );
         }
     }
 }
 
-pub fn train_perceptron() {
-    // Initialize perceptron
-    let mut perceptron = Perceptron{
-        weights: SVector::<f64, 2>::new(0.0, 1.0),
-        bias: 0.,
-    };
-    
-    // Train perceptron
-    let inputs = SMatrix::<f64, 2, 4>::new(
-        1.0, 2.0, 0.0, 1.0,
-        -1.0, 0.0, 2.0, 1.0,
-    );
-    let outputs = SVector::<f64, 4>::new(0.0, 1.0, 1.0, 1.0);
-    let step = 0.1;
-    let num_steps = 10;
-    perceptron.gradient_descent(
-        num_steps,
-        inputs,
-        outputs,
-        step,
-    );
+// TODO: have this function accept a matrix of inputs
+// and outputs of arbitrary dimension
+impl Perceptron<2, 4> {
+    pub fn train_perceptron(&mut self) {
+        // Train perceptron
+        let inputs = SMatrix::<f64, 2, 4>::new(
+            1.0, 2.0, 0.0, 1.0,
+            -1.0, 0.0, 2.0, 1.0,
+        );
+        let outputs = SVector::<f64, 4>::new(0.0, 1.0, 1.0, 1.0);
+        let step = 0.1;
+        let num_steps = 10;
+
+        self.gradient_descent(
+            num_steps,
+            inputs,
+            outputs,
+            step,
+        );
+    }
 }
