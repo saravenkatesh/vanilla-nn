@@ -26,9 +26,7 @@ fn main() {
         STEPS,
     );
 
-    // TODO: Train perceptron on input data, and
-    // ask for an n-dimensional vector
-    while true {
+    loop {
         println!("Enter a 2 dimensional vector");
         let mut input = String::new();
         io::stdin()
