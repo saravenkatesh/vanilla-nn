@@ -108,7 +108,7 @@ impl FeedForward {
             let linear_output = &linear_components[self.size - 1 - i];
             let ref next_weights = &self.weights[self.size - i];
             derivative_wrt_output = 
-                (*next_weights * derivative_wrt_output).component_mul(
+                ((*next_weights).transpose() * derivative_wrt_output).component_mul(
                     &sigmoid_derivative(linear_output.clone())
                 );
 
