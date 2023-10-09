@@ -1,33 +1,28 @@
-use std::io;
-use nalgebra::{SVector, SMatrix};
-use crate::perceptron::Perceptron;
-mod perceptron;
-
-
-const INPUTS: SMatrix<f64, 2, 4> = SMatrix::<f64, 2, 4>::new(
-    1.0, 2.0, 0.0, 1.0,
-    -1.0, 0.0, 2.0, 1.0,
-);
-const OUTPUTS: SVector<f64, 4> = SVector::<f64, 4>::new(0.0, 1.0, 1.0, 1.0);
-const STEPS: f64 = 0.1;
-const NUM_STEPS: i32 = 10;
-
+use nalgebra::{DVector, DMatrix, dvector, dmatrix};
+use vanilla_nn::FeedForward;
 
 fn main() {
-    let feed_forward = FeedForward{
+    // A (2, 2, 1) - network
+    let mut feed_forward = FeedForward{
         weights: vec!(
             dmatrix![
-                0.0, 0.0;
-                0.0, 0.0;
+                3.0, 0.5;
+                1.0, 0.2;
             ],
-            dmatrix![0.0, 0.0],
+            dmatrix![0.1, 0.0;
+                0.2, 0.2],
+            dmatrix![0.3, 0.1],
         ),
         bias: vec!(
-            dvector!(0.0, 0.0),
-            dvector!(0.0),
+            dvector!(1.0, 0.3),
+            dvector!(0.3, 0.5),
+            dvector!(0.2),
         ),
-        size: 2,
+        size: 3,
     };
+    
+    let input: Vec<DVector<f64>> = vec![dvector![1.0, -1.0]];
+    let output: Vec<DVector<f64>> = vec![dvector![2.0]];
+    feed_forward.gradient(input, output, 0.5);
+    println!("{:?}, {:?}", feed_forward.weights, feed_forward.bias)
 }
-
-

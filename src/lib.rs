@@ -1,31 +1,6 @@
 use nalgebra::{DVector, DMatrix, dmatrix, dvector};
 use libm::exp;
 
-fn main() {
-    // A (2, 2, 1) - network
-    let feed_forward = FeedForward{
-        weights: vec!(
-            dmatrix![
-                3.0, 0.5;
-                1.0, 0.2;
-            ],
-            dmatrix![0.1, 0.0;
-                0.2, 0.2],
-            dmatrix![0.3, 0.1],
-        ),
-        bias: vec!(
-            dvector!(1.0, 0.3),
-            dvector!(0.3, 0.5),
-            dvector!(0.2),
-        ),
-        size: 3,
-    };
-    
-    let input: DVector<f64> = dvector![1.0, -1.0];
-    let output: DVector<f64> = dvector![2.0];
-    println!("{:?}", feed_forward.update(input, output));
-}
-
 // TODO: replace for loops with maps
 fn sigmoid(mut x: f64) -> f64 {
     return 1.0 / ( 1.0 + exp(-x));
@@ -50,31 +25,40 @@ fn sigmoid_derivative(mut x: DVector<f64>) -> DVector<f64> {
 pub struct FeedForward {
     pub weights: Vec<DMatrix<f64>>,
     pub bias: Vec<DVector<f64>>, 
-    size: usize,
+    pub size: usize,
 }
 
 impl FeedForward {
-    fn gradient(
-        &self,
-        inputs: Vec<DMatrix<f64>>,
+    pub fn gradient(
+        &mut self,
+        inputs: Vec<DVector<f64>>,
         outputs: Vec<DVector<f64>>,
+        step_size: f64,
     ) {
-
+        let training_set_size: f64 = inputs.len() as f64;
+        for (i, input) in inputs.iter().enumerate() {
+            let output = &outputs[i];
+            let (change_in_weights, change_in_bias) = 
+                self.update(input.clone(), output.clone());
+            for j in 0..self.weights.len() {
+                self.weights[j] -= 
+                    (step_size / training_set_size) * change_in_weights[j].clone();
+            }
+        }
     }
-
+        
+    /// Takes a single input vector and single desired output
+    /// vector as training data.  Returns the gradient of
+    /// the cost function w.r.t the network's weights
+    /// and biases, for this one input / output pair
+    /// i.e. C(input, training_output) = 
+    /// ( F(input) - training_output)^2 / 2, 
+    /// where F(x) is the function described by the network. 
     fn update(
-        self,
+        &self,
         input: DVector<f64>,
         training_output: DVector<f64>,
     ) -> (Vec<DMatrix<f64>>, Vec<DVector<f64>>) {
-        /// Takes a single input vector and single desired output
-        /// vector as training data.  Returns the gradient of
-        /// the cost function w.r.t the network's weights
-        /// and biases, for this one input / output pair
-        /// i.e. C(input, training_output) = 
-        /// ( N(input) - training_output) / 2, 
-        /// where N(x) is the function described by the network. 
-        
         // Vector to store the derivatives w.r.t. bias
         let mut change_in_bias: Vec<DVector<f64>> = Vec::new();
         // Vector to store the derivatives w.r.t weights
@@ -89,6 +73,7 @@ impl FeedForward {
         // Find and store the outputs of each layer
         (layer_outputs, linear_components) = 
             self.initialize_layer_outputs(layer_outputs, linear_components);
+
         // Find the final derivatives -- those from the last layer
         let mut last_linear_component = &linear_components[self.size - 1];
         let penulatimate_linear_component = &linear_components[self.size - 2];
