@@ -89,11 +89,10 @@ impl FeedForward {
         // Find and store the outputs of each layer
         (layer_outputs, linear_components) = 
             self.initialize_layer_outputs(layer_outputs, linear_components);
-       
         // Find the final derivatives -- those from the last layer
         let mut last_linear_component = &linear_components[self.size - 1];
         let penulatimate_linear_component = &linear_components[self.size - 2];
-        let layer_output = &layer_outputs[self.size - 1];
+        let layer_output = &layer_outputs[self.size];
         derivative_wrt_output = layer_output
             .component_mul(
                 &sigmoid_derivative(last_linear_component.clone())
@@ -105,7 +104,7 @@ impl FeedForward {
 
         // Find the rest of the derivatives
         for i in 1..self.size {
-            let output = &layer_outputs[self.size - 1 - i];
+            let output = &layer_outputs[self.size - i];
             let linear_output = &linear_components[self.size - 1 - i];
             let ref next_weights = &self.weights[self.size - i];
             derivative_wrt_output = 
