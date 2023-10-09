@@ -7,6 +7,9 @@ fn threshold(x: f64) -> f64 {
     return 0.0;
 }
 
+// X = number of weights
+// N = number of data points in the training set
+// TODO: Decouple the training set
 pub struct Perceptron<const X: usize, const N: usize> {
     pub weights: SVector<f64, X>,
     pub bias: f64,
