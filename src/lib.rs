@@ -29,6 +29,16 @@ pub struct FeedForward {
 }
 
 impl FeedForward {
+    pub fn classify(&self, input: DVector<f64>) -> DVector<f64> {
+        let mut output: DVector<f64> = input;
+        for i in 0..self.size {
+            let weights = &self.weights[i];
+            let bias = &self.bias[i];
+            output = multi_dim_sigmoid(weights * output + bias);
+        };
+        return output
+    }
+
     pub fn gradient(
         &mut self,
         inputs: Vec<DVector<f64>>,

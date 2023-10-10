@@ -1,8 +1,6 @@
 use std::io;
 use nalgebra::{SVector, SMatrix};
-use crate::perceptron::Perceptron;
-mod perceptron;
-
+use perceptron::Perceptron;
 
 const INPUTS: SMatrix<f64, 2, 4> = SMatrix::<f64, 2, 4>::new(
     1.0, 2.0, 0.0, 1.0,
@@ -12,8 +10,8 @@ const OUTPUTS: SVector<f64, 4> = SVector::<f64, 4>::new(0.0, 1.0, 1.0, 1.0);
 const STEPS: f64 = 0.1;
 const NUM_STEPS: i32 = 10;
 
-
-pub fn run_perceptron() {
+// TODO: Add description
+fn main() {
     let mut perceptron = Perceptron{
         weights: SVector::<f64, 2>::new(0.0, 1.0),
         bias: 3.,
